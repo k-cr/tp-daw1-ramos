@@ -1,0 +1,20 @@
+# Compilación
+target/
+*.class
+
+# IntelliJ / VS Code
+.idea/
+*.iml
+.vscode/
+
+# Base H2 en archivo (¡nunca al repositorio!)
+data/
+*.mv.db
+*.trace.db
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
