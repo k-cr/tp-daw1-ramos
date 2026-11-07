@@ -1,32 +1,186 @@
-### Archivo de pruebas · reemplazá las rutas por las de tu enunciado
-### En IntelliJ: abrí este archivo y tocá el ▶ verde de cada petición.
+### Archivo de pruebas · Enunciado 5 · Eventos
+### En IntelliJ: abrí este archivo y tocá el ▶ verde de cada petición (en orden).
 
 @base = http://localhost:8080/api
 
-### Listar
-GET {{base}}/recursos
+############ EVENTOS ############
 
-### Crear
-POST {{base}}/recursos
+### Crear evento (201 + Location)
+POST {{base}}/eventos
 Content-Type: application/json
 
 {
-  "campo1": "valor",
-  "campo2": "valor",
-  "campo3": "valor"
+  "nombre": "Recital Rock",
+  "fecha": "2026-12-20T21:00:00",
+  "capacidad": 100,
+  "precio": 15000
 }
 
-### Buscar por id
-GET {{base}}/recursos/1
-
-### Error de validación (400)
-POST {{base}}/recursos
+### Crear evento chico (capacidad 2)
+POST {{base}}/eventos
 Content-Type: application/json
 
-{ "campo1": "" }
+{
+  "nombre": "Teatro chico",
+  "fecha": "2026-12-05T20:00:00",
+  "capacidad": 2,
+  "precio": 5000
+}
 
-### Cambiar estado
-PATCH {{base}}/otro-recurso/1/estado
+### Listar eventos
+GET {{base}}/eventos
+
+### Buscar por nombre (sin distinguir mayúsculas)
+GET {{base}}/eventos?nombre=rock
+
+### Buscar evento por id
+GET {{base}}/eventos/1
+
+### Evento inexistente (404)
+GET {{base}}/eventos/999999
+
+### Id no numérico (400)
+GET {{base}}/eventos/abc
+
+### Modificar evento
+PUT {{base}}/eventos/1
 Content-Type: application/json
 
-{ "estado": "OTRO_ESTADO" }
+{
+  "nombre": "Recital Rock (nueva fecha)",
+  "fecha": "2026-12-21T21:00:00",
+  "capacidad": 120,
+  "precio": 15000
+}
+
+### Error de validación (400 con "errores")
+POST {{base}}/eventos
+Content-Type: application/json
+
+{
+  "nombre": "",
+  "fecha": "2020-01-01T20:00:00",
+  "capacidad": 0,
+  "precio": -5
+}
+
+### JSON mal formado (400)
+POST {{base}}/eventos
+Content-Type: application/json
+
+{ "nombre": "roto"
+
+############ ASISTENTES ############
+
+### Crear asistente
+POST {{base}}/asistentes
+Content-Type: application/json
+
+{
+  "nombre": "Ana Díaz",
+  "email": "ana@mail.com"
+}
+
+### Crear otro asistente
+POST {{base}}/asistentes
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@mail.com"
+}
+
+### Email inválido (400)
+POST {{base}}/asistentes
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "email": "no-es-un-mail"
+}
+
+### Listar asistentes
+GET {{base}}/asistentes
+
+### Entradas de un asistente
+GET {{base}}/asistentes/1/entradas
+
+############ ENTRADAS ############
+
+### Reservar entrada (201, estado RESERVADA)
+POST {{base}}/entradas
+Content-Type: application/json
+
+{
+  "eventoId": 1,
+  "asistenteId": 1
+}
+
+### Misma persona, mismo evento (409)
+POST {{base}}/entradas
+Content-Type: application/json
+
+{
+  "eventoId": 1,
+  "asistenteId": 1
+}
+
+### Evento inexistente (404)
+POST {{base}}/entradas
+Content-Type: application/json
+
+{
+  "eventoId": 999999,
+  "asistenteId": 1
+}
+
+### Listar entradas
+GET {{base}}/entradas
+
+### Entradas de un evento
+GET {{base}}/eventos/1/entradas
+
+### Saltear estados: RESERVADA → USADA (409)
+PATCH {{base}}/entradas/1/estado
+Content-Type: application/json
+
+{ "estado": "USADA" }
+
+### Pagar: RESERVADA → PAGADA (200, calcula importe con preventa)
+PATCH {{base}}/entradas/1/estado
+Content-Type: application/json
+
+{ "estado": "PAGADA" }
+
+### Volver atrás: PAGADA → RESERVADA (409)
+PATCH {{base}}/entradas/1/estado
+Content-Type: application/json
+
+{ "estado": "RESERVADA" }
+
+### Sin estado (400)
+PATCH {{base}}/entradas/1/estado
+Content-Type: application/json
+
+{}
+
+### Transferir entrada pagada a otro asistente (extra)
+PATCH {{base}}/entradas/1/transferir
+Content-Type: application/json
+
+{ "asistenteId": 2 }
+
+### Validar en la puerta (extra) · reemplazá por el "codigo" de la entrada
+POST {{base}}/entradas/validar
+Content-Type: application/json
+
+{ "codigo": "PEGAR-ACA-EL-CODIGO" }
+
+### Ocupación del evento (extra)
+GET {{base}}/eventos/1/ocupacion
+
+### Borrar evento con entradas (409)
+DELETE {{base}}/eventos/1
+
+### Borrar evento sin entradas (204)
+DELETE {{base}}/eventos/2
