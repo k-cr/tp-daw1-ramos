@@ -29,10 +29,15 @@ public class EventoController {
         this.entradaService = entradaService;
     }
 
-    // GET /api/eventos y GET /api/eventos?nombre=rock (required = false: el filtro es opcional).
+    // GET /api/eventos
+    // GET /api/eventos?nombre=rock (required = false: el filtro es opcional).
+    // GET /api/eventos?futuros=true (required = false: el filtro es opcional).
     @GetMapping
-    public List<Evento> listar(@RequestParam(required = false) String nombre) {
-        return eventoService.listar(nombre);
+    public List<Evento> listar(
+            @RequestParam(required = false) String nombre,
+            @RequestParam(required = false) Boolean futuros
+    ) {
+        return eventoService.listar(nombre, futuros);
     }
 
     // @PathVariable toma el {id} de la URL. Si no es número → 400 (lo maneja ManejadorErrores).

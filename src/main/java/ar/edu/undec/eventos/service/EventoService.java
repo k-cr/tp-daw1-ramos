@@ -11,6 +11,7 @@ import ar.edu.undec.eventos.repository.EventoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 // Capa de servicio: acá va la lógica de negocio. El controller solo recibe y responde HTTP.
@@ -26,8 +27,11 @@ public class EventoService {
         this.entradas = entradas;
     }
 
-    // Sin filtro devuelve todos; con ?nombre= busca los que contienen ese texto.
-    public List<Evento> listar(String nombre) {
+    // Hace GET de los eventos
+    public List<Evento> listar(String nombre, Boolean futuro) {
+        // Si futuro es true, solo trae los eventos futuros
+        if (Boolean.TRUE.equals(futuro)) return eventos.findByFechaAfter(LocalDateTime.now());
+        // Si nombre no tiene nada, trae todos
         if (nombre == null || nombre.isBlank()) return eventos.findAll();
         return eventos.findByNombreContainingIgnoreCase(nombre.trim());
     }
