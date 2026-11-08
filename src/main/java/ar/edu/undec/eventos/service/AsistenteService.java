@@ -35,6 +35,9 @@ public class AsistenteService {
     @Transactional
     public Asistente crear(AsistenteRequest req) {
         Asistente a = new Asistente();
+        if (asistentes.existsByEmail(req.email().trim())) {
+            throw new ConflictoException("Ya existe una persona con ese email");
+        }
         copiar(req, a);
         return asistentes.save(a);
     }
@@ -42,6 +45,9 @@ public class AsistenteService {
     @Transactional
     public Asistente modificar(Long id, AsistenteRequest req) {
         Asistente a = buscar(id);
+        if (asistentes.existsByEmail(req.email().trim())) {
+            throw new ConflictoException("Ya existe una persona con ese email");
+        }
         copiar(req, a);
         return asistentes.save(a);
     }

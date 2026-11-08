@@ -15,13 +15,13 @@ public interface EntradaRepository extends JpaRepository<Entrada, Long> {
     // Cuenta las entradas del evento cuyo estado NO es el indicado (lo uso con ANULADA → "vendidas").
     long countByEventoIdAndEstadoNot(Long eventoId, EstadoEntrada estado);
 
-    // ¿El asistente ya tiene una entrada no anulada para ese evento? (regla 2)
+    // Confirma si el asistente ya tiene una entrada no anulada para ese evento (regla 2)
     boolean existsByEventoIdAndAsistenteIdAndEstadoNot(Long eventoId, Long asistenteId, EstadoEntrada estado);
 
-    // ¿El evento tiene alguna entrada? (regla 3: no se puede borrar)
+    // Confirma si el evento tiene alguna entrada (regla 3: no se puede borrar)
     boolean existsByEventoId(Long eventoId);
 
-    // ¿El asistente tiene alguna entrada? (no se puede borrar)
+    // Confirma si el asistente tiene alguna entrada (no se puede borrar)
     boolean existsByAsistenteId(Long asistenteId);
 
     // GET /api/eventos/{id}/entradas
